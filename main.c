@@ -28,7 +28,6 @@ void* my_malloc(size_t size)
         return (void*)((char*)ptr + sizeof(struct block));
     }
     else {
-    {
         struct block* prev = NULL;
         struct block* current = head;
         while(current != NULL)
@@ -49,10 +48,15 @@ void* my_malloc(size_t size)
         b->next = NULL;
         prev->next = b;
         return (void*)((char*)b + sizeof(struct block));
-
     }
 }
 
+void my_free(void* ptr)
+{
+    if(ptr == NULL) return;
+    struct block* b = (struct block*)((char*)ptr - sizeof(struct block));
+    b->is_free = true;
+}
 
 int main() {
     int *p = (int*)my_malloc(sizeof(int));
