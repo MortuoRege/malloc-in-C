@@ -3,13 +3,13 @@
 #include <stdbool.h>
 #define ALIGN8(x) ((x + 7) & ~7)
 
-
 struct __attribute__((aligned(8))) block
 {
     size_t size;
     bool is_free;
     struct block* next;
 };
+
 static struct block* head = NULL;
 
 void* my_malloc(size_t size)
