@@ -51,16 +51,41 @@ void* my_malloc(size_t size)
     }
 }
 
+void merging()
+{
+    struct block* current = head;
+    //while loop checks if both current and next nodes are not null and if they are adjacent merges them
+    while(current != NULL && current->next != NULL)
+    {
+        if(current->is_free && current->next->is_free &&
+            (char*)current + sizeof(struct block) + current->size == (char*)current->next)
+        {
+            //merging
+            current->size += sizeof(struct block) + current->next->size;
+            current->next = current->next->next;
+        }
+        else current = current->next;
+    }
+}
+
 void my_free(void* ptr)
 {
     if(ptr == NULL) return;
     struct block* b = (struct block*)((char*)ptr - sizeof(struct block));
+    if(b->is_free)
+    {
+        printf("Memory already freed\n");
+        return;
+    }
     b->is_free = true;
+    merging();
 }
 
 int main() {
     int *p = (int*)my_malloc(sizeof(int));
     *p = 42;
     printf("Allocated memory: %d\n", *p);
+    my_free(p);
+    my_free(p);
     return 0;
 }
